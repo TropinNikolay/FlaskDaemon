@@ -14,6 +14,9 @@ def index():
 
 @app.route("/upload", methods=["GET", "POST"])
 def upload():
+    """
+    View for handling file upload.
+    """
     if request.method == "POST":
         uploaded_file = request.files["file"]
         content = uploaded_file.read()
@@ -28,6 +31,9 @@ def upload():
 
 @app.route("/download")
 def download():
+    """
+    View for handling file download.
+    """
     file_hash = request.args.get("hash")
     if not file_hash:
         return "Please, provide hash to download file."
@@ -40,6 +46,9 @@ def download():
 
 @app.route("/delete", methods=["DELETE"])
 def delete():
+    """
+    View for handling file deletion.
+    """
     file_hash = request.args.get("hash")
     if not file_hash:
         return "Please, provide hash to delete file."
