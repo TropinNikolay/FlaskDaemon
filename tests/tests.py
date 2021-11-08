@@ -1,3 +1,4 @@
+import hashlib
 import os
 import json
 import requests
@@ -11,7 +12,11 @@ class TestGet(unittest.TestCase):
         """
         self.base_url = "http://127.0.0.1:5000/"
         self.path_to_file = "files/Shakespeare.txt"
-        self.params = {"hash": "677aad6d5025e877e8aae74d8690845f"}
+        self.params = {}
+
+        with open(self.path_to_file, "rb") as file:
+            content = file.read()
+        self.params["hash"] = hashlib.md5(content).hexdigest()
         self.path_to_storage = (
             f'../store/{self.params["hash"][:2]}/{self.params["hash"]}'
         )
@@ -23,9 +28,9 @@ class TestGet(unittest.TestCase):
         with open(self.path_to_file, "rb") as file:
             files = {"file": file}
             response = requests.post(self.base_url + "upload", files=files)
-        file_hash = json.loads(response.text)
+        file_hash_server = json.loads(response.text)
         self.assertTrue(response.status_code, 200)
-        self.assertEqual(self.params["hash"], file_hash["file_hash"])
+        self.assertEqual(self.params["hash"], file_hash_server["file_hash"])
 
     def test_get_method(self) -> None:
         """
